@@ -41,7 +41,7 @@ public class BoardManager : MonoBehaviour
             {
                 int state = boardinfo[i, j];
                 GameObject disc = disclist[i, j];
-                if (state == 0)
+                if (state == -1)
                 {
                     if (disc.activeSelf) disc.SetActive(false);
                 }
