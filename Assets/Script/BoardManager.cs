@@ -1,33 +1,35 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BoardManager : MonoBehaviour
 {
     public GameObject disc;
     public int[,] boardinfo = new int[8, 8];//-1 null ,0 White, 1 Black 
+    public GameObject Black, White, Board;
 
     private readonly bool[,] boardcheck = new bool[8, 8];
-    private readonly GameObject[,] disclist = new GameObject[8, 8];//y,x
+    private readonly GameObject[,] disclist = new GameObject[8, 8], Boardlist = new GameObject[8, 8];//y,x
+    private Text Bltext, Whtext;
+
     // Start is called before the first frame update
     void Start()
     {
+        Bltext = Black.GetComponent<Text>();
+        Whtext = White.GetComponent<Text>();
+        Vector3 put;
         for (int i = 0; i < 8; i++)
         {
             for (int j = 0; j < 8; j++)
             {
-                boardinfo[i, j] = ((i * 8) + j) % 2;
-                if (boardinfo[i, j] == 1)
-                {
-                    boardcheck[i, j] = true;
-                }
+                put = new Vector3(-3.5f + j, 0, 3.5f - i);
+                boardinfo[i, j] = -1;
+                disclist[i, j] = Instantiate(disc, put, Quaternion.identity);
+                Boardlist[i, j] = Instantiate(Board, put, Quaternion.identity);
             }
         }
-        for (int i = 0; i < 8; i++)
-        {
-            for (int j = 0; j < 8; j++)
-            {
-                disclist[i, j] = Instantiate(disc, new Vector3(-3.5f + j, 0, 3.5f - i), Quaternion.identity);
-            }
-        }
+        boardinfo[3, 3] = boardinfo[4, 4] = 0;
+        boardinfo[3, 4] = boardinfo[4, 3] = 1;
+
     }
 
 
