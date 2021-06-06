@@ -37,20 +37,26 @@ public class GameManager : MonoBehaviour
         boardinfo[x, y] = boardinfo[x, y] == 0 ? 1 : 0;
         Checkit();
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
     private void Checkit()
     {
+        int Bl = 0, Wh = 0;
         for (int i = 0; i < 8; i++)
         {
             for (int j = 0; j < 8; j++)
             {
                 int state = boardinfo[i, j];
                 GameObject disc = disclist[i, j];
+                switch (state)
+                {
+                    case 0:
+                        Wh++;
+                        break;
+                    case 1:
+                        Bl++;
+                        break;
+                    default:
+                        break;
+                }
                 if (state == -1)
                 {
                     if (disc.activeSelf)
@@ -68,6 +74,8 @@ public class GameManager : MonoBehaviour
                 disc.GetComponent<Disc>().Reload(state);
             }
         }
+        Bltext.text = "Black:" + Bl;
+        Whtext.text = "White:" + Wh;
     }
 
 }
