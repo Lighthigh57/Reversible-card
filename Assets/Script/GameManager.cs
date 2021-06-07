@@ -74,8 +74,10 @@ public class GameManager : MonoBehaviour
                 disc.GetComponent<Disc>().Reload(state);
             }
         }
+
         Bltext.text = "Black:" + Bl;
         Whtext.text = "White:" + Wh;
+
     }
 
 }
