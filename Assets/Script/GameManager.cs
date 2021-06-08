@@ -74,10 +74,27 @@ public class GameManager : MonoBehaviour
                 disc.GetComponent<Disc>().Reload(state);
             }
         }
-
+        BoardReset();
         Bltext.text = "Black:" + Bl;
         Whtext.text = "White:" + Wh;
 
     }
 
+    private void BoardReset()
+    {
+        for (int i = 0; i < 8; i++)
+        {
+            for (int j = 0; j < 8; j++)
+            {
+                if (boardinfo[i, j] == -1)
+                {
+                    bool[] check = new bool[8];
+                    for (int dir = 0; dir < 8; dir++)
+                    {
+
+                    }
+                }
+            }
+        }
+    }
 }
