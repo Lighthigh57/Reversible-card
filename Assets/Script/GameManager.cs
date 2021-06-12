@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -88,13 +89,21 @@ public class GameManager : MonoBehaviour
             {
                 if (boardinfo[i, j] == -1)
                 {
-                    bool[] check = new bool[8];
-                    for (int dir = 0; dir < 8; dir++)
+                    if (CheckLine(i,j))
                     {
 
                     }
                 }
             }
         }
+    }
+
+    private bool CheckLine(int y, int x)
+    {
+        for (int i = 0; i < 8; i++)
+        {
+            
+        }
+        return true;
     }
 }
