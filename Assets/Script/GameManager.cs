@@ -7,10 +7,9 @@ public class GameManager : MonoBehaviour
     public int[,] boardinfo = new int[8, 8];//0 null ,-1 White, 1 Black 
     public GameObject Black, White, Board;
 
-    private readonly bool[,] boardcheck = new bool[8, 8];
     private readonly GameObject[,] disclist = new GameObject[8, 8], Boardlist = new GameObject[8, 8];//y,x
     private Text Bltext, Whtext;
-    private readonly sbyte turn = -1;
+    private sbyte turn = 1;
 
     private void Start()
     {
@@ -34,8 +33,10 @@ public class GameManager : MonoBehaviour
 
     internal void TurnDisc(int x, int y)
     {
-        boardinfo[x, y] = boardinfo[x, y] == -1 ? 1 : -1;
+        boardinfo[x, y] = turn;
+        turn *= -1;
         Checkit();
+        
     }
     private void Checkit()
     {
@@ -53,8 +54,6 @@ public class GameManager : MonoBehaviour
                         break;
                     case 1:
                         Bl++;
-                        break;
-                    default:
                         break;
                 }
                 if (state == 0)
@@ -82,6 +81,7 @@ public class GameManager : MonoBehaviour
 
     private void BoardReset()
     {
+        bool[,] boardcheck = new bool[8, 8];
         for (int i = 0; i < 8; i++)
         {
             for (int j = 0; j < 8; j++)
