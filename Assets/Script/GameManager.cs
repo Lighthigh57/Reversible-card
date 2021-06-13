@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,6 +10,7 @@ public class GameManager : MonoBehaviour
     private readonly bool[,] boardcheck = new bool[8, 8];
     private readonly GameObject[,] disclist = new GameObject[8, 8], Boardlist = new GameObject[8, 8];//y,x
     private Text Bltext, Whtext;
+    private readonly bool turn = true;
 
     // Start is called before the first frame update
     void Start()
@@ -89,10 +89,7 @@ public class GameManager : MonoBehaviour
             {
                 if (boardinfo[i, j] == -1)
                 {
-                    if (CheckAd(i,j))
-                    {
-
-                    }
+                    boardcheck[i, j] = CheckAd(i, j);
                 }
             }
         }
@@ -100,16 +97,46 @@ public class GameManager : MonoBehaviour
 
     private bool CheckAd(int y, int x)
     {
-        for (int i = 0; i < 8; i++)
+        for (int ny = -1; ny <= 1; ny++)
         {
-            switch (i)
+            if ((ny == -1 && y == 0) || (ny == 1 && y == 7))
             {
-                case 0:
-
-                default:
-                    break;
+                continue;
+            }
+            for (int nx = -1; nx <= 1; nx++)
+            {
+                if ((ny == -1 && x == 0) || (ny == 1 && x == 7) || (nx == 0 && ny == 0))
+                {
+                    continue;
+                }
+                if (boardinfo[ny, nx] == (turn ? 1 : 0))
+                {
+                    if (CheckLine(ny, nx, y, x))
+                    {
+                        return true;
+                    }
+                }
             }
         }
-        return true;
+        return false;
+    }
+
+    private bool CheckLine(int ny, int nx, int y, int x)
+    {
+        int nowx = x;
+        int nowy = y;
+        while (true)
+        {
+            nowx += nx;
+            nowy += ny;
+            if (boardinfo[ny, nx] == -1)
+            {
+                return false;
+            }
+            else if ()
+            {
+
+            }
+        }
     }
 }
