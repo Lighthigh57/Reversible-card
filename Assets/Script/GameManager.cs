@@ -89,7 +89,7 @@ public class GameManager : MonoBehaviour
             {
                 if (boardinfo[i, j] == -1)
                 {
-                    if (CheckLine(i,j))
+                    if (CheckAd(i,j))
                     {
 
                     }
@@ -98,11 +98,17 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private bool CheckLine(int y, int x)
+    private bool CheckAd(int y, int x)
     {
         for (int i = 0; i < 8; i++)
         {
-            
+            switch (i)
+            {
+                case 0:
+
+                default:
+                    break;
+            }
         }
         return true;
     }
