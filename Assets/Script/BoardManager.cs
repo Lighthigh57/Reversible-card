@@ -23,5 +23,9 @@ public class BoardManager : MonoBehaviour
         int y = (int)Mathf.Abs(GetComponent<Transform>().position.z-3.5f);
         manager.GetComponent<GameManager>().TurnDisc(y,x);
     }
+    private void ChengeColor(bool OK)
+    {
+
+    }
 
 }

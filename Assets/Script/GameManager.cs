@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
@@ -90,6 +90,7 @@ public class GameManager : MonoBehaviour
                 if (boardinfo[i, j] == -1)
                 {
                     boardcheck[i, j] = CheckAd(i, j);
+                    Debug.Log(boardcheck[i, j]);
                 }
             }
         }
@@ -105,11 +106,11 @@ public class GameManager : MonoBehaviour
             }
             for (int nx = -1; nx <= 1; nx++)
             {
-                if ((ny == -1 && x == 0) || (ny == 1 && x == 7) || (nx == 0 && ny == 0))
+                if ((nx == -1 && x == 0) || (nx == 1 && x == 7) || (nx == 0 && ny == 0))
                 {
                     continue;
                 }
-                if (boardinfo[ny, nx] == (turn ? 1 : 0))
+                if (boardinfo[y + ny, x + nx] == (turn ? 1 : 0))
                 {
                     if (CheckLine(ny, nx, y, x))
                     {
@@ -129,13 +130,17 @@ public class GameManager : MonoBehaviour
         {
             nowx += nx;
             nowy += ny;
-            if (boardinfo[ny, nx] == -1)
+            if (nowx<0||nowx>7||nowy<0||nowy>7)
             {
                 return false;
             }
-            else if ()
+            if (boardinfo[nowy, nowx] == -1)
             {
-
+                return false;
+            }
+            else if (boardinfo[nowy, nowx] == (turn ? 0 : 1))
+            {
+                return true;
             }
         }
     }
