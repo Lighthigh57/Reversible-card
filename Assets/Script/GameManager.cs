@@ -4,16 +4,15 @@ using UnityEngine.UI;
 public class GameManager : MonoBehaviour
 {
     public GameObject disc;
-    public int[,] boardinfo = new int[8, 8];//-1 null ,0 White, 1 Black 
+    public int[,] boardinfo = new int[8, 8];//0 null ,-1 White, 1 Black 
     public GameObject Black, White, Board;
 
     private readonly bool[,] boardcheck = new bool[8, 8];
     private readonly GameObject[,] disclist = new GameObject[8, 8], Boardlist = new GameObject[8, 8];//y,x
     private Text Bltext, Whtext;
-    private readonly bool turn = true;
+    private readonly sbyte turn = -1;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         Bltext = Black.GetComponent<Text>();
         Whtext = White.GetComponent<Text>();
@@ -23,19 +22,19 @@ public class GameManager : MonoBehaviour
             for (int j = 0; j < 8; j++)
             {
                 put = new Vector3(-3.5f + j, 0, 3.5f - i);
-                boardinfo[i, j] = -1;
+                boardinfo[i, j] = 0;
                 disclist[i, j] = Instantiate(disc, put, Quaternion.identity);
                 Boardlist[i, j] = Instantiate(Board, put, Quaternion.identity);
             }
         }
-        boardinfo[3, 3] = boardinfo[4, 4] = 0;
+        boardinfo[3, 3] = boardinfo[4, 4] = -1;
         boardinfo[3, 4] = boardinfo[4, 3] = 1;
         Checkit();
     }
 
     internal void TurnDisc(int x, int y)
     {
-        boardinfo[x, y] = boardinfo[x, y] == 0 ? 1 : 0;
+        boardinfo[x, y] = boardinfo[x, y] == -1 ? 1 : -1;
         Checkit();
     }
     private void Checkit()
@@ -49,7 +48,7 @@ public class GameManager : MonoBehaviour
                 GameObject disc = disclist[i, j];
                 switch (state)
                 {
-                    case 0:
+                    case -1:
                         Wh++;
                         break;
                     case 1:
@@ -58,7 +57,7 @@ public class GameManager : MonoBehaviour
                     default:
                         break;
                 }
-                if (state == -1)
+                if (state == 0)
                 {
                     if (disc.activeSelf)
                     {
@@ -87,10 +86,11 @@ public class GameManager : MonoBehaviour
         {
             for (int j = 0; j < 8; j++)
             {
-                if (boardinfo[i, j] == -1)
+                if (boardinfo[i, j] == 0)
                 {
                     boardcheck[i, j] = CheckAd(i, j);
                     Debug.Log(boardcheck[i, j]);
+                    Boardlist[i, j].GetComponent<BoardManager>().ChengeColor(boardcheck[i, j]);
                 }
             }
         }
@@ -110,7 +110,7 @@ public class GameManager : MonoBehaviour
                 {
                     continue;
                 }
-                if (boardinfo[y + ny, x + nx] == (turn ? 1 : 0))
+                if (boardinfo[y + ny, x + nx] == (turn * -1))
                 {
                     if (CheckLine(ny, nx, y, x))
                     {
@@ -124,21 +124,20 @@ public class GameManager : MonoBehaviour
 
     private bool CheckLine(int ny, int nx, int y, int x)
     {
-        int nowx = x;
-        int nowy = y;
+        int nowx = x, nowy = y;
         while (true)
         {
             nowx += nx;
             nowy += ny;
-            if (nowx<0||nowx>7||nowy<0||nowy>7)
+            if (nowx < 0 || nowx > 7 || nowy < 0 || nowy > 7)
             {
                 return false;
             }
-            if (boardinfo[nowy, nowx] == -1)
+            if (boardinfo[nowy, nowx] == 0)
             {
                 return false;
             }
-            else if (boardinfo[nowy, nowx] == (turn ? 0 : 1))
+            else if (boardinfo[nowy, nowx] == turn)
             {
                 return true;
             }
