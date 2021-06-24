@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
@@ -10,6 +11,8 @@ public class GameManager : MonoBehaviour
     private readonly GameObject[,] disclist = new GameObject[8, 8], Boardlist = new GameObject[8, 8];//y,x
     private Text Bltext, Whtext;
     private sbyte turn = 1;
+    private readonly List<int>[,] table = new List<int>[8, 8];
+    private readonly bool[,] boardcheck = new bool[8, 8];
 
     private void Start()
     {
@@ -20,7 +23,7 @@ public class GameManager : MonoBehaviour
         {
             for (int j = 0; j < 8; j++)
             {
-                put = new Vector3(-3.5f + j, 0, 3.5f - i);
+                put = new Vector3(-3.5f + j, 0, 3.5f - i);//j = 横(x) i = 縦(y)
                 boardinfo[i, j] = 0;
                 disclist[i, j] = Instantiate(disc, put, Quaternion.identity);
                 Boardlist[i, j] = Instantiate(Board, put, Quaternion.identity);
@@ -30,14 +33,43 @@ public class GameManager : MonoBehaviour
         boardinfo[3, 4] = boardinfo[4, 3] = 1;
         Checkit();
     }
-
+    /// <summary>
+    /// ディスク回転
+    /// </summary>
+    /// <param name="x">裏返すX</param>
+    /// <param name="y">裏返すY</param>
     internal void TurnDisc(int x, int y)
     {
-        boardinfo[x, y] = turn;
+        if (!boardcheck[y, x])
+        {
+            return;
+        }
+        boardinfo[y, x] = turn;
+        foreach (var dir in table[y, x])
+        {
+            int nx = (dir % 3) - 1, ny = (dir / 3) - 1, plasex = x, plasey = y;
+            bool fin = true;
+            while (fin)
+            {
+                plasex += nx;
+                plasey += ny;
+                if (boardinfo[plasey, plasex] == turn)
+                {
+                    fin = false;
+                }
+                else
+                {
+                    boardinfo[plasey, plasex] = turn;
+                }
+            }
+        }
         turn *= -1;
         Checkit();
-        
+
     }
+    /// <summary>
+    /// ボード情報更新
+    /// </summary>
     private void Checkit()
     {
         int Bl = 0, Wh = 0;
@@ -81,7 +113,7 @@ public class GameManager : MonoBehaviour
 
     private void BoardReset()
     {
-        bool[,] boardcheck = new bool[8, 8];
+
         for (int i = 0; i < 8; i++)
         {
             for (int j = 0; j < 8; j++)
@@ -95,9 +127,15 @@ public class GameManager : MonoBehaviour
             }
         }
     }
-
+    /// <summary>
+    /// 隣が敵と接しているかをチェック
+    /// </summary>
+    /// <param name="y">チェックするY座標</param>
+    /// <param name="x">チェックするX座標</param>
+    /// <returns>配置可能かどうか</returns>
     private bool CheckAd(int y, int x)
     {
+        bool result = false;
         for (int ny = -1; ny <= 1; ny++)
         {
             if ((ny == -1 && y == 0) || (ny == 1 && y == 7))
@@ -112,14 +150,18 @@ public class GameManager : MonoBehaviour
                 }
                 if (boardinfo[y + ny, x + nx] == (turn * -1))
                 {
+                    table[y, x] = new List<int>();
                     if (CheckLine(ny, nx, y, x))
                     {
-                        return true;
+                        result = true;
+                        Debug.Log(table[y,x].Count);
+                        table[y, x].Add((nx + 1) + ((ny + 1) * 3));
+                        
                     }
                 }
             }
         }
-        return false;
+        return result;
     }
 
     private bool CheckLine(int ny, int nx, int y, int x)
