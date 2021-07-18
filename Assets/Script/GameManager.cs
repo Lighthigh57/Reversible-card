@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     private readonly GameObject[,] disclist = new GameObject[8, 8], Boardlist = new GameObject[8, 8];//y,x
     private Text Bltext, Whtext;
     private sbyte turn = 1;
+    private bool pass;
     private readonly List<int>[,] table = new List<int>[8, 8];
     private readonly bool[,] boardcheck = new bool[8, 8];
 
@@ -26,6 +27,7 @@ public class GameManager : MonoBehaviour
                 put = new Vector3(-3.5f + j, 0, 3.5f - i);//j = 横(x) i = 縦(y)
                 boardinfo[i, j] = 0;
                 disclist[i, j] = Instantiate(disc, put, Quaternion.identity);
+                disclist[i, j].SetActive(false);
                 Boardlist[i, j] = Instantiate(Board, put, Quaternion.identity);
             }
         }
@@ -88,19 +90,9 @@ public class GameManager : MonoBehaviour
                         Bl++;
                         break;
                 }
-                if (state == 0)
+                if (!(state == 0) && !disc.activeSelf)
                 {
-                    if (disc.activeSelf)
-                    {
-                        disc.SetActive(false);
-                    }
-                }
-                else
-                {
-                    if (!disc.activeSelf)
-                    {
-                        disc.SetActive(true);
-                    }
+                    disc.SetActive(true);
                 }
                 disc.GetComponent<Disc>().Reload(state);
             }
@@ -121,9 +113,12 @@ public class GameManager : MonoBehaviour
                 if (boardinfo[i, j] == 0)
                 {
                     boardcheck[i, j] = CheckAd(i, j);
-                    Debug.Log(boardcheck[i, j]);
-                    Boardlist[i, j].GetComponent<BoardManager>().ChengeColor(boardcheck[i, j]);
                 }
+                else
+                {
+                    boardcheck[i, j] = false;
+                }
+                Boardlist[i, j].GetComponent<BoardManager>().ChengeColor(boardcheck[i, j]);
             }
         }
     }
@@ -136,6 +131,7 @@ public class GameManager : MonoBehaviour
     private bool CheckAd(int y, int x)
     {
         bool result = false;
+        table[y, x] = new List<int>();
         for (int ny = -1; ny <= 1; ny++)
         {
             if ((ny == -1 && y == 0) || (ny == 1 && y == 7))
@@ -150,17 +146,15 @@ public class GameManager : MonoBehaviour
                 }
                 if (boardinfo[y + ny, x + nx] == (turn * -1))
                 {
-                    table[y, x] = new List<int>();
                     if (CheckLine(ny, nx, y, x))
                     {
                         result = true;
-                        Debug.Log(table[y,x].Count);
                         table[y, x].Add((nx + 1) + ((ny + 1) * 3));
-                        
                     }
                 }
             }
         }
+        Debug.Log("Turn Discs are" + table[y, x].Count);
         return result;
     }
 
@@ -170,18 +164,18 @@ public class GameManager : MonoBehaviour
         while (true)
         {
             nowx += nx;
-            nowy += ny;
+            nowy += ny;;
             if (nowx < 0 || nowx > 7 || nowy < 0 || nowy > 7)
             {
                 return false;
             }
+            if (boardinfo[nowy, nowx] == turn)
+            {
+                return true;
+            }
             if (boardinfo[nowy, nowx] == 0)
             {
                 return false;
-            }
-            else if (boardinfo[nowy, nowx] == turn)
-            {
-                return true;
             }
         }
     }
