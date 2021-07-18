@@ -9,7 +9,7 @@ public class Change_Scene : MonoBehaviour
 
     public AudioClip clip;
     // Update メソッドが初めて呼び出される直前に Start が呼び出されます
-    private void Start()
+    void Start()
     {
         player = GetComponent<AudioSource>();
     }
